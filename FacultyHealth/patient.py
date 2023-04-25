@@ -1,7 +1,12 @@
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import *
+from tkinter import ttk
+from tkinter import messagebox
+from patientDb import Patient_Database
 import os
+
+db = Patient_Database("patient.db")
 
 root = Tk()
 root.config(highlightthickness=0, background="#DFEEED")
@@ -14,6 +19,17 @@ x = (screen_width - window_width) // 2
 y = (screen_height - window_height) // 2
 root.geometry(f"{window_width}x{window_height}+{x}+{y}")
 root.overrideredirect(True)
+
+name = StringVar()
+address = StringVar()
+birthday = StringVar()
+age = StringVar()
+contact = StringVar()
+martial = StringVar()
+height = StringVar()
+weight = StringVar()
+pulse = StringVar()
+bodytemp = StringVar()
 
 sidebar_frame = Frame(root, bg="#FBF0D7")
 sidebar_frame.place(relx=0, rely=0, relheight=1, relwidth=0.14)
@@ -132,38 +148,38 @@ ptntRec.grid(row=0, column=0, columnspan=2, padx=20, pady=10, sticky="nsew")
 name_label = Label(ptntRec_panel, text="Name", font=("Microsoft JhengHei", 11, "bold"), 
                    bg="#FBF0D7", fg="#497687")
 name_label.grid(row=1, column=0, padx=20, pady=10, sticky="w")
-name_entry = Entry(ptntRec_panel, font=("Microsoft JhengHei", 11), fg="#497687", width=32)
+name_entry = Entry(ptntRec_panel, textvariable= name, font=("Microsoft JhengHei", 11), fg="#497687", width=32)
 name_entry.grid(row=1, column=1, padx=20, pady=10)
 
 address_label = Label(ptntRec_panel, text="Address", font=("Microsoft JhengHei", 11, "bold"), 
                       bg="#FBF0D7", fg="#497687")
 address_label.grid(row=2, column=0, padx=20, pady=10, sticky="w")
-address_entry = Entry(ptntRec_panel, font=("Microsoft JhengHei", 11), fg="#497687", width=32)
+address_entry = Entry(ptntRec_panel, textvariable= address, font=("Microsoft JhengHei", 11), fg="#497687", width=32)
 address_entry.grid(row=2, column=1, padx=20, pady=10)
 
 birthday_label = Label(ptntRec_panel, text="Birthday", font=("Microsoft JhengHei", 11, "bold"), 
                        bg="#FBF0D7", fg="#497687")
 birthday_label.grid(row=3, column=0, padx=20, pady=10, sticky="w")
-birthday_entry = Entry(ptntRec_panel, font=("Microsoft JhengHei", 11), fg="#497687", width=32)
+birthday_entry = Entry(ptntRec_panel, textvariable= birthday, font=("Microsoft JhengHei", 11), fg="#497687", width=32)
 birthday_entry.grid(row=3, column=1, padx=20, pady=10)
 
 age_label = Label(ptntRec_panel, text="Age", font=("Microsoft JhengHei", 11, "bold"), 
                   bg="#FBF0D7", fg="#497687")
 age_label.grid(row=4, column=0, padx=20, pady=10, sticky="w")
-age_entry = Entry(ptntRec_panel, font=("Microsoft JhengHei", 11), fg="#497687", width=32)
+age_entry = Entry(ptntRec_panel,textvariable= age, font=("Microsoft JhengHei", 11), fg="#497687", width=32)
 age_entry.grid(row=4, column=1, padx=20, pady=10)
 
 phone_label = Label(ptntRec_panel, text="Contact #", font=("Microsoft JhengHei", 11, "bold"), 
                     bg="#FBF0D7", fg="#497687")
 phone_label.grid(row=5, column=0, padx=20, pady=10, sticky="w")
-phone_entry = Entry(ptntRec_panel, font=("Microsoft JhengHei", 11), fg="#497687", width=32)
+phone_entry = Entry(ptntRec_panel, textvariable= contact, font=("Microsoft JhengHei", 11), fg="#497687", width=32)
 phone_entry.grid(row=5, column=1, padx=1, pady=10)
 
 marital_label = Label(ptntRec_panel, text="Marital", font=("Microsoft JhengHei", 11, "bold"), 
                       bg="#FBF0D7", fg="#497687")
 marital_label.grid(row=6, column=0, padx=20, pady=10, sticky="w")
 marital_combobox = Combobox(ptntRec_panel, font=("Microsoft JhengHei", 11), 
-                            values=["Single", "Married", "Divorced", "Separated", "Widowed"], width=30)
+                            values=["Single", "Married", "Divorced", "Separated", "Widowed"], width=30, state="readonly")
 marital_combobox.grid(row=6, column=1, padx=1, pady=10)
 
 #Physical Exam
@@ -177,7 +193,7 @@ ptntRec.grid(row=0, column=0, columnspan=2, padx=20, pady=10, sticky="nsew")
 height_label = Label(physExam_panel, text="Height", font=("Microsoft JhengHei", 11, "bold"), 
                      bg="#FBF0D7", fg="#497687")
 height_label.grid(row=1, column=0, padx=20, pady=10, sticky="w")
-height_entry = Entry(physExam_panel, font=("Microsoft JhengHei", 11), fg="#497687")
+height_entry = Entry(physExam_panel, textvariable= height, font=("Microsoft JhengHei", 11), fg="#497687")
 height_entry.grid(row=1, column=1, padx=20, pady=10)
 cm_label = Label(physExam_panel, text="cm", font=("Microsoft JhengHei", 11, "bold"), 
                  bg="#FBF0D7", fg="#497687")
@@ -186,7 +202,7 @@ cm_label.grid(row=1, column=2, padx=1, pady=10, sticky="w")
 weight_label = Label(physExam_panel, text="Weight", font=("Microsoft JhengHei", 11, "bold"), 
                      bg="#FBF0D7", fg="#497687")
 weight_label.grid(row=2, column=0, padx=20, pady=10, sticky="w")
-weight_entry = Entry(physExam_panel, font=("Microsoft JhengHei", 11), fg="#497687")
+weight_entry = Entry(physExam_panel, textvariable= weight, font=("Microsoft JhengHei", 11), fg="#497687")
 weight_entry.grid(row=2, column=1, padx=20, pady=10)
 kg_label = Label(physExam_panel, text="kg", font=("Microsoft JhengHei", 11, "bold"), 
                  bg="#FBF0D7", fg="#497687")
@@ -195,7 +211,7 @@ kg_label.grid(row=2, column=2, padx=1, pady=10, sticky="w")
 pr_label = Label(physExam_panel, text="Pulse Rate", font=("Microsoft JhengHei", 11, "bold"), 
                  bg="#FBF0D7", fg="#497687")
 pr_label.grid(row=3, column=0, padx=20, pady=10, sticky="w")
-pr_entry = Entry(physExam_panel, font=("Microsoft JhengHei", 11), fg="#497687")
+pr_entry = Entry(physExam_panel, textvariable= pulse, font=("Microsoft JhengHei", 11), fg="#497687")
 pr_entry.grid(row=3, column=1, padx=20, pady=10)
 bpm_label = Label(physExam_panel, text="bpm", font=("Microsoft JhengHei", 11, "bold"), 
                   bg="#FBF0D7", fg="#497687")
@@ -204,13 +220,38 @@ bpm_label.grid(row=3, column=2, padx=1, pady=10, sticky="w")
 bt_label = Label(physExam_panel, text="Body Temperature", font=("Microsoft JhengHei", 11, "bold"), 
                  bg="#FBF0D7", fg="#497687")
 bt_label.grid(row=4, column=0, padx=20, pady=10, sticky="w")
-bt_entry = Entry(physExam_panel, font=("Microsoft JhengHei", 11), fg="#497687")
+bt_entry = Entry(physExam_panel, textvariable= bodytemp, font=("Microsoft JhengHei", 11), fg="#497687")
 bt_entry.grid(row=4, column=1, padx=20, pady=10)
 cel_label = Label(physExam_panel, text="°C", font=("Microsoft JhengHei", 11, "bold"), 
                   bg="#FBF0D7", fg="#497687")
 cel_label.grid(row=4, column=2, padx=1, pady=10, sticky="w")
 
-def reset():
+
+def getData(event):
+    selected_row = tv.focus()
+    data = tv.item(selected_row)
+    global row
+    row = data["values"]
+    #print(row)
+    name.set(row[1]) 
+    address.set(row[2])
+    age.set(row[3])
+    birthday.set(row[4])
+    contact.set(row[5])
+    martial.set(row[6])
+    height.set(row[7])
+    weight.set(row[8])
+    pulse.set(row[9])
+    bodytemp.set(row[10])
+
+
+def dispalyAll():
+    tv.delete(*tv.get_children())
+    for row in db.fetch():
+        tv.insert("", END, values=row)
+
+
+def clear():
     patientID_entry.delete(0, END)
     name_entry.delete(0, END)
     address_entry.delete(0, END)
@@ -223,26 +264,24 @@ def reset():
     pr_entry.delete(0, END)
     bt_entry.delete(0, END)
 
-btnReset = Button(root, text="Reset", command=reset, 
+btnReset = Button(root, text="Reset", command=clear, 
                       bg="#497687", fg="#ffffff")
 btnReset.config(font=("Microsoft JhengHei", 11),cursor="hand2")
 btnReset.place(relx=0.19, rely=0.91, anchor=CENTER)
 
-def new():
+def add():
     #tempo-command
-    patientID_entry.delete(0, END)
-    name_entry.delete(0, END)
-    address_entry.delete(0, END)
-    birthday_entry.delete(0, END)
-    age_entry.delete(0, END)
-    phone_entry.delete(0, END)
-    marital_combobox.set("")
-    height_entry.delete(0, END)
-    weight_entry.delete(0, END)
-    pr_entry.delete(0, END)
-    bt_entry.delete(0, END)
+    if name_entry.get() == "" or address_entry.get() == "" or birthday_entry.get()== "" or age_entry.get()=="" or phone_entry.get(    
+        )== "" or marital_combobox.get()== "" or height_entry.get()== "" or weight_entry.get()=="" or pr_entry.get()=="" or bt_entry.get()=="":
+        messagebox.showerror("Erorr in Input", "Please Fill All the Details")
+        return
+    db.insert(name_entry.get(), address_entry.get(), birthday_entry.get() , age_entry.get() ,phone_entry.get(), marital_combobox.get(),
+              height_entry.get(),weight_entry.get(), pr_entry.get(),bt_entry.get())
+    messagebox.showinfo("Success", "Record Inserted")
+    clear()
+    dispalyAll()
 
-btnNew = Button(root, text="New", command=new, 
+btnNew = Button(root, text="Add", command=add, 
                       bg="#497687", fg="#ffffff")
 btnNew.config(font=("Microsoft JhengHei", 11),cursor="hand2")
 btnNew.place(relx=0.235, rely=0.91, anchor=CENTER)
@@ -365,5 +404,38 @@ exitLogo.configure(background='#DFEEED', cursor="hand2")
 exitLogo.place(relx=0.97, rely=0.009)
 exitLogo.bind("<Button-1>", lambda event: exitForm())
 
+# Table Frame
+tree_frame = Frame(root, bg="#ecf0f1")
+tree_frame.place(x=683, y=72, width=530, height=350)
+style = ttk.Style()
+style.configure("mystyle.Treeview", font=('Calibri', 12),
+                rowheight=50)  # Modify the font of the body
+style.configure("mystyle.Treeview.Heading", font=('Calibri', 12))  # Modify the font of the headings
+tv = ttk.Treeview(tree_frame, columns=(1, 2, 3, 4, 5, 6, 7,8,9,10,11), style="mystyle.Treeview")
+tv.heading("1", text="ID")
+tv.column("1", width=1)
+tv.heading("2", text="Name")
+tv.column("2", width=1)
+tv.heading("3", text="Address")
+tv.column("3", width=1)
+tv.heading("4", text="Birthday")
+tv.column("4", width=1)
+tv.heading("5", text="Age")
+tv.column("5", width=1)
+tv.heading("6", text="Contact")
+tv.column("6", width=1)
+tv.heading("7", text="Martial")
+tv.column("7", width=1)
+tv.heading("8", text="Height")
+tv.column("8", width=1)
+tv.heading("9", text="Weight")
+tv.column("9", width=5)
+tv.heading("10", text="Pulse Rate")
+tv.column("10", width=1)
+tv.heading("11", text="Body Temp")
+tv.column("11", width=1)
+tv['show'] = 'headings'
+tv.bind("<ButtonRelease-1>", getData)
+tv.pack(fill=X)
 
 root.mainloop()

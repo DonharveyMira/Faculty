@@ -1,8 +1,14 @@
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import *
+from tkinter import ttk
+from tkinter import messagebox
+from meds_db import Meds_Database
+from equipmentDB import Equipment_Database
 import os
 
+meds_db = Meds_Database("meds.db")
+equipment_db = Equipment_Database("equipments.db")
 root = Tk()
 root.config(highlightthickness=0, background="#DFEEED")
 
@@ -14,6 +20,13 @@ x = (screen_width - window_width) // 2
 y = (screen_height - window_height) // 2
 root.geometry(f"{window_width}x{window_height}+{x}+{y}")
 root.overrideredirect(True)
+
+equipment_name= StringVar()
+equipment_quantity= StringVar()
+product_code= StringVar()
+description= StringVar()
+quantity_on_hand= StringVar()
+quantity_max= StringVar()
 
 #Exit Form
 def exitForm():
@@ -75,7 +88,6 @@ patient_label.config(font=("Microsoft JhengHei", 11, "bold"), cursor="hand2")
 patient_label.place(relx=0.065, rely=0.3, anchor=CENTER)
 patient_label.bind("<Button-1>", lambda event: ptntBtn())
 
-
 # staff icon/button
 def staffBtn():
     root.withdraw() 
@@ -129,5 +141,196 @@ logout_label = Label(root, text="Logout", bg="#FBF0D7", fg="#497687")
 logout_label.config(font=("Microsoft JhengHei", 11, "bold"), cursor="hand2")
 logout_label.place(relx=0.065, rely=0.91, anchor=CENTER) 
 logout_label.bind("<Button-1>", lambda event: logoutBtn())
+
+
+
+def getEquipData(event):
+    selected_row = tv.focus()
+    data = tv.item(selected_row)
+    global row
+    row = data["values"]
+    #print(row)
+    equipment_name.set(row[1])
+    equipment_quantity.set(row[2])
+
+    
+def getMedsData(event):
+    selected_row = tv.focus()
+    data = tv.item(selected_row)
+    global row
+    row = data["values"]
+    #print(row)
+    equipment_name.set(row[1])
+    equipment_quantity.set(row[2])
+
+
+def clearEquip():
+    equipment_name.delete(0, END)
+    equipment_quantity.delete(0, END)
+   
+
+btnReset = Button(root, text="Clear", command=clearEquip, 
+                      bg="#497687", fg="#ffffff")
+btnReset.config(font=("Microsoft JhengHei", 11),cursor="hand2")
+btnReset.place(relx=0.53, rely=0.36, anchor=CENTER)
+
+def addEquip():
+    #tempo-command
+    if equipment_name.get() == "" or equipment_quantity.get() == "" :
+        messagebox.showerror("Erorr in Input", "Please Fill All the Details")
+        return
+    equipment_db.insert(equipment_name.get(), equipment_quantity.get())
+    messagebox.showinfo("Success", "Record Inserted")
+    clearEquip()
+    dispalyAllEquip()
+
+btnNew = Button(root, text="Add", command=addEquip, 
+                      bg="#497687", fg="#ffffff")
+btnNew.config(font=("Microsoft JhengHei", 11),cursor="hand2")
+btnNew.place(relx=0.53, rely=0.15, anchor=CENTER)
+
+
+def deleteEquip():
+    #tempo-command
+    equipment_db.remove(row[0])
+    clearEquip()
+    dispalyAllEquip()
+
+btnNew = Button(root, text="Delete", command=deleteEquip    , 
+                      bg="#497687", fg="#ffffff")
+btnNew.config(font=("Microsoft JhengHei", 11),cursor="hand2")
+btnNew.place(relx=0.53, rely=0.29, anchor=CENTER)
+
+
+def updateEquip():
+    if equipment_name.get() == "" or equipment_quantity.get() == "" :
+        messagebox.showerror("Erorr in Input", "Please Fill All the Details")
+        return
+    equipment_db.update(row[0],equipment_name.get(), equipment_quantity.get())
+    messagebox.showinfo("Success", "Record Update")
+    clearEquip()
+    dispalyAllEquip()
+
+
+def dispalyAllEquip():
+    tv.delete(*tv.get_children())
+    for row in equipment_db.fetch():
+        tv.insert("", END, values=row)
+
+btnSave = Button(root, text="Update", command=updateEquip, 
+                      bg="#497687", fg="#ffffff")
+btnSave.config(font=("Microsoft JhengHei", 11),cursor="hand2")
+btnSave.place(relx=0.53, rely=0.22, anchor=CENTER)
+
+
+# Table Frame for equipments
+tree_frame = Frame(root, bg="#ecf0f1")
+tree_frame.place(x=213, y=356, width=488, height=387)
+style = ttk.Style()
+style.configure("mystyle.Treeview", font=('Calibri', 18),
+                rowheight=50)  # Modify the font of the body
+style.configure("mystyle.Treeview.Heading", font=('Calibri', 18))  # Modify the font of the headings
+tv = ttk.Treeview(tree_frame, columns=(1, 2, 3,), style="mystyle.Treeview")
+tv.heading("1", text="ID")
+tv.column("1", width=2)
+tv.heading("2", text="Equipment Name")
+tv.column("2", width=5)
+tv.heading("3", text="Equipment Quantity")
+tv.column("3", width=5)
+tv['show'] = 'headings'
+tv.bind("<ButtonRelease-1>", getEquipData)
+tv.pack(fill=X)
+
+
+def getMedsData(event):
+    selected_row = tv.focus()
+    data = tv.item(selected_row)
+    global row
+    row = data["values"]
+    #print(row)
+    product_code.set(row[1])
+    description.set(row[2])
+    quantity_on_hand.set(row[3])
+    quantity_max.set(row[4])
+
+
+def clearMeds():
+    product_code.delete(0, END)
+    description.delete(0, END)
+    quantity_on_hand.delete(0, END)
+    quantity_max.delete(0, END)
+   
+
+btnReset = Button(root, text="Clear", command=clearMeds, 
+                      bg="#497687", fg="#ffffff")
+btnReset.config(font=("Microsoft JhengHei", 11),cursor="hand2")
+btnReset.place(relx=.97, rely=0.36, anchor=CENTER)
+
+def addMeds():
+    #tempo-command
+    if product_code.get() == "" or equipment_quantity.get() == "" :
+        messagebox.showerror("Erorr in Input", "Please Fill All the Details")
+        return
+    equipment_db.insert(equipment_name.get(), equipment_quantity.get())
+    messagebox.showinfo("Success", "Record Inserted")
+    clearMeds()
+    dispalyAllMeds()
+
+btnNew = Button(root, text="Add", command=addMeds, 
+                      bg="#497687", fg="#ffffff")
+btnNew.config(font=("Microsoft JhengHei", 11),cursor="hand2")
+btnNew.place(relx=0.97, rely=0.15, anchor=CENTER)
+
+
+def deleteMeds():
+    #tempo-command
+    equipment_db.remove(row[0])
+    clearEquip()
+    dispalyAllEquip()
+
+btnNew = Button(root, text="Delete", command=deleteMeds, 
+                      bg="#497687", fg="#ffffff")
+btnNew.config(font=("Microsoft JhengHei", 11),cursor="hand2")
+btnNew.place(relx=0.97, rely=0.29, anchor=CENTER)
+
+
+def updateMeds():
+    if equipment_name.get() == "" or equipment_quantity.get() == "" :
+        messagebox.showerror("Erorr in Input", "Please Fill All the Details")
+        return
+    meds_db.update(row[0],equipment_name.get(), equipment_quantity.get())
+    messagebox.showinfo("Success", "Record Update")
+    clearMeds()
+    dispalyAllMeds()
+
+
+def dispalyAllMeds():
+    tv.delete(*tv.get_children())
+    for row in meds_db.fetch():
+        tv.insert("", END, values=row)
+
+btnSave = Button(root, text="Update", command=updateMeds, 
+                      bg="#497687", fg="#ffffff")
+btnSave.config(font=("Microsoft JhengHei", 11),cursor="hand2")
+btnSave.place(relx=0.97, rely=0.22, anchor=CENTER)
+
+
+# Table Frame for meds
+tree_frame = Frame(root, bg="#ecf0f1")
+tree_frame.place(x=748, y=356, width=488, height=387)
+style = ttk.Style()
+style.configure("mystyle.Treeview", font=('Calibri', 18),
+                rowheight=50)  # Modify the font of the body
+style.configure("mystyle.Treeview.Heading", font=('Calibri', 18))  # Modify the font of the headings
+tv = ttk.Treeview(tree_frame, columns=(1, 2, 3,), style="mystyle.Treeview")
+tv.heading("1", text="ID")
+tv.column("1", width=2)
+tv.heading("2", text="Equipment Name")
+tv.column("2", width=5)
+tv.heading("3", text="Equipment Quantity")
+tv.column("3", width=5)
+tv['show'] = 'headings'
+tv.bind("<ButtonRelease-1>", getEquipData)
+tv.pack(fill=X)
 
 root.mainloop()
