@@ -23,11 +23,6 @@ root.overrideredirect(True)
 
 equipment_name= StringVar()
 equipment_quantity= StringVar()
-product_code= StringVar()
-description= StringVar()
-quantity_on_hand= StringVar()
-quantity_max= StringVar()
-
 #Exit Form
 def exitForm():
     root.withdraw() 
@@ -145,8 +140,8 @@ logout_label.bind("<Button-1>", lambda event: logoutBtn())
 
 
 def getEquipData(event):
-    selected_row = tv.focus()
-    data = tv.item(selected_row)
+    selected_row = equipment_tv.focus()
+    data = equipment_tv.item(selected_row)
     global row
     row = data["values"]
     #print(row)
@@ -155,8 +150,8 @@ def getEquipData(event):
 
     
 def getMedsData(event):
-    selected_row = tv.focus()
-    data = tv.item(selected_row)
+    selected_row = equipment_tv.focus()
+    data = equipment_tv.item(selected_row)
     global row
     row = data["values"]
     #print(row)
@@ -213,9 +208,9 @@ def updateEquip():
 
 
 def dispalyAllEquip():
-    tv.delete(*tv.get_children())
+    equipment_tv.delete(*equipment_tv.get_children())
     for row in equipment_db.fetch():
-        tv.insert("", END, values=row)
+        equipment_tv.insert("", END, values=row)
 
 btnSave = Button(root, text="Update", command=updateEquip, 
                       bg="#497687", fg="#ffffff")
@@ -224,27 +219,31 @@ btnSave.place(relx=0.53, rely=0.22, anchor=CENTER)
 
 
 # Table Frame for equipments
-tree_frame = Frame(root, bg="#ecf0f1")
-tree_frame.place(x=213, y=356, width=488, height=387)
+equipment_frame = Frame(root, bg="#ecf0f1")
+equipment_frame.place(x=213, y=356, width=488, height=387)
 style = ttk.Style()
 style.configure("mystyle.Treeview", font=('Calibri', 18),
                 rowheight=50)  # Modify the font of the body
 style.configure("mystyle.Treeview.Heading", font=('Calibri', 18))  # Modify the font of the headings
-tv = ttk.Treeview(tree_frame, columns=(1, 2, 3,), style="mystyle.Treeview")
-tv.heading("1", text="ID")
-tv.column("1", width=2)
-tv.heading("2", text="Equipment Name")
-tv.column("2", width=5)
-tv.heading("3", text="Equipment Quantity")
-tv.column("3", width=5)
-tv['show'] = 'headings'
-tv.bind("<ButtonRelease-1>", getEquipData)
-tv.pack(fill=X)
+equipment_tv = ttk.Treeview(equipment_frame, columns=(1, 2, 3,), style="mystyle.Treeview")
+equipment_tv.heading("1", text="ID")
+equipment_tv.column("1", width=2)
+equipment_tv.heading("2", text="Equipment Name")
+equipment_tv.column("2", width=5)
+equipment_tv.heading("3", text="Equipment Quantity")
+equipment_tv.column("3", width=5)
+equipment_tv['show'] = 'headings'
+equipment_tv.bind("<ButtonRelease-1>", getEquipData)
+equipment_tv.pack(fill=X)
 
+product_code= StringVar()
+description= StringVar()
+quantity_on_hand= StringVar()
+quantity_max= StringVar()
 
 def getMedsData(event):
-    selected_row = tv.focus()
-    data = tv.item(selected_row)
+    selected_row = meds_tv.focus()
+    data = meds_tv.item(selected_row)
     global row
     row = data["values"]
     #print(row)
@@ -271,7 +270,7 @@ def addMeds():
     if product_code.get() == "" or equipment_quantity.get() == "" :
         messagebox.showerror("Erorr in Input", "Please Fill All the Details")
         return
-    equipment_db.insert(equipment_name.get(), equipment_quantity.get())
+    meds_db.insert(equipment_name.get(), equipment_quantity.get())
     messagebox.showinfo("Success", "Record Inserted")
     clearMeds()
     dispalyAllMeds()
@@ -284,7 +283,7 @@ btnNew.place(relx=0.97, rely=0.15, anchor=CENTER)
 
 def deleteMeds():
     #tempo-command
-    equipment_db.remove(row[0])
+    meds_db.remove(row[0])
     clearEquip()
     dispalyAllEquip()
 
@@ -305,9 +304,9 @@ def updateMeds():
 
 
 def dispalyAllMeds():
-    tv.delete(*tv.get_children())
+    meds_tv.delete(*meds_tv.get_children())
     for row in meds_db.fetch():
-        tv.insert("", END, values=row)
+        meds_tv.insert("", END, values=row)
 
 btnSave = Button(root, text="Update", command=updateMeds, 
                       bg="#497687", fg="#ffffff")
@@ -316,21 +315,25 @@ btnSave.place(relx=0.97, rely=0.22, anchor=CENTER)
 
 
 # Table Frame for meds
-tree_frame = Frame(root, bg="#ecf0f1")
-tree_frame.place(x=748, y=356, width=488, height=387)
+meds_frame = Frame(root, bg="#ecf0f1")
+meds_frame.place(x=748, y=356, width=488, height=387)
 style = ttk.Style()
-style.configure("mystyle.Treeview", font=('Calibri', 18),
+style.configure("mystyle.Treeview", font=('Calibri', 12),
                 rowheight=50)  # Modify the font of the body
-style.configure("mystyle.Treeview.Heading", font=('Calibri', 18))  # Modify the font of the headings
-tv = ttk.Treeview(tree_frame, columns=(1, 2, 3,), style="mystyle.Treeview")
-tv.heading("1", text="ID")
-tv.column("1", width=2)
-tv.heading("2", text="Equipment Name")
-tv.column("2", width=5)
-tv.heading("3", text="Equipment Quantity")
-tv.column("3", width=5)
-tv['show'] = 'headings'
-tv.bind("<ButtonRelease-1>", getEquipData)
-tv.pack(fill=X)
+style.configure("mystyle.Treeview.Heading", font=('Calibri', 12))  # Modify the font of the headings
+meds_tv = ttk.Treeview(meds_frame, columns=(1, 2, 3, 4, 5), style="mystyle.Treeview")
+meds_tv.heading("1", text="ID")
+meds_tv.column("1", width=2)
+meds_tv.heading("2", text="Product Code")
+meds_tv.column("2", width=5)
+meds_tv.heading("3", text="Description")
+meds_tv.column("3", width=5)
+meds_tv.heading("4", text="Product on hand")
+meds_tv.column("4", width=5)
+meds_tv.heading("5", text="Product max")
+meds_tv.column("5", width=5)
+meds_tv['show'] = 'headings'
+meds_tv.bind("<ButtonRelease-1>", getMedsData)
+meds_tv.pack(fill=X)
 
 root.mainloop()
